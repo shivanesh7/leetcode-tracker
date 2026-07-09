@@ -1,0 +1,40 @@
+// Last updated: 7/9/2026, 9:47:17 AM
+class Solution {
+    public int[][] matrixBlockSum(int[][] mat, int k) {
+        int m = mat.length, n = mat[0].length;
+
+        int[][] prefix = new int[m + 1][n + 1];
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                prefix[i + 1][j + 1] = mat[i][j]
+                        + prefix[i][j + 1]
+                        + prefix[i + 1][j]
+                        - prefix[i][j];
+            }
+        }
+
+        int[][] res = new int[m][n];
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+
+                int r1 = Math.max(0, i - k);
+                int c1 = Math.max(0, j - k);
+                int r2 = Math.min(m - 1, i + k);
+                int c2 = Math.min(n - 1, j + k);
+
+                res[i][j] = getSum(prefix, r1, c1, r2, c2);
+            }
+        }
+
+        return res;
+    }
+
+    private int getSum(int[][] prefix, int r1, int c1, int r2, int c2) {
+        return prefix[r2 + 1][c2 + 1]
+             - prefix[r1][c2 + 1]
+             - prefix[r2 + 1][c1]
+             + prefix[r1][c1];
+    }
+}
